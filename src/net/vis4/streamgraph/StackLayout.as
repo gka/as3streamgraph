@@ -22,7 +22,7 @@ package net.vis4.streamgraph
 			var n:int = layers[0].size.length;
 			
 			// lay out layers, top to bottom.
-			var baseline:Vector.<Number> = new Vector.<Number>();
+			var baseline:Vector.<Number> = new Vector.<Number>(n);
 			
 			// Put layers on top of the baseline.
 			stackOnBaseline(layers, baseline);

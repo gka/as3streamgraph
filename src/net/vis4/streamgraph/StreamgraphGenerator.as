@@ -7,9 +7,6 @@ package net.vis4.streamgraph
 	import flash.geom.Rectangle;
 	import net.vis4.geom.CatmullRomSpline;
 	import net.vis4.streamgraph.Layer;
-	import net.vis4.text.fonts.embedded.QuicksandBook;
-	import net.vis4.text.Label;
-	import net.vis4.utils.DelayedTask;
 	
 	/**
 	 * ...
@@ -21,13 +18,13 @@ package net.vis4.streamgraph
 		protected var _viewport:Rectangle;
 		
 		public var isGraphCurved:Boolean = true; // catmull-rom interpolation
-		public var seed:int = 23; 						// random seed
+		public var seed:int = 212; 						// random seed
 		
 		public var DPI:Number = 300;
 		public var widthInches:Number = 3.5;
 		public var heightInches:Number = 0.7;
-		public var numLayers:int = 7;
-		public var layerSize:int = 50;
+		public var numLayers:int = 50;
+		public var layerSize:int = 100;
 		
 		public var data:DataSource;
 		public var layout:LayerLayout;
@@ -36,35 +33,47 @@ package net.vis4.streamgraph
 		
 		public var layers:Vector.<Layer>;
 		
-		public function StreamgraphGenerator(container:Sprite, viewport:Rectangle) 
+		public function StreamgraphGenerator(config:Object) 
 		{
-			_viewport = viewport;
-			_container = container;
+			_config = config;
 			
 			setup();
 		}
 		
 		public function setup():void 
 		{
+			if (Rectangle(_config.viewport) == null) 
+				throw new ArgumentError('you must specify the viewport rectangle');
+			if (Sprite(_config.container) == null) 
+				throw new ArgumentError('you must specify the container sprite');
+			_viewport = _config.viewport;
+			_container = _config.container;
+			
+			if (_config.seed) seed = _config.seed;
+			
+			if (_config.numLayers) numLayers = _config.numLayers;
+			if (_config.layerSize) layerSize = _config.layerSize;
+			
 			// GENERATE DATA
-			data = new LateOnsetDataSource();
-			//data = new BelievableDataSource(seed);
+			//data = new LateOnsetDataSource();
+			data = _config.data || new BelievableDataSource(seed);
 
 			// ORDER DATA
-			ordering = new LateOnsetSort();
+			ordering = _config.ordering || new LateOnsetSort();
 			//ordering = new VolatilitySort();
 			//ordering = new InverseVolatilitySort();
 			//ordering = new BasicLateOnsetSort();
 			//ordering = new NoLayerSort();
 
 			// LAYOUT DATA
-			layout = new MinimizedWiggleLayout();
+			layout = _config.layout || new MinimizedWiggleLayout();
 			//layout = new MinimizedWiggleLayout();
 			//layout = new ThemeRiverLayout();
 			//layout = new StackLayout();
 
 			// COLOR DATA
-			coloring = new LastFMColorPicker("assets/layers-nyt.jpg", run);
+			coloring = _config.coloring || new LastFMColorPicker("assets/layers-nyt.jpg");
+			coloring.load(run);
 			//coloring = new LastFMColorPicker(this, "layers.jpg");
 			//coloring = new RandomColorPicker(this);
 		}
@@ -189,6 +198,7 @@ package net.vis4.streamgraph
 		}
 		
 				
+				protected var _config:Object;
 		protected var catmullSplinePoints:Array = [];
 		
 		protected function drawCurve():void

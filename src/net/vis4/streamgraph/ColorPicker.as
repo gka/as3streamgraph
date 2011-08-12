@@ -13,6 +13,8 @@ package net.vis4.streamgraph
 		function colorize(layers:Vector.<Layer>):void;
 		
 		function getName():String;
+		
+		function load(callback:Function):void;
 	}
 	
 }

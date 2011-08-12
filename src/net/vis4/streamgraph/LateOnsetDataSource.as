@@ -24,7 +24,7 @@ package net.vis4.streamgraph
 			
 			for (var i:int = 0; i < numLayers; i++) {
 				var name:String = "Layer #" + i,
-					onset:int = sizeArrayLength * (Random.next() * 1.25 - 0.25),
+					onset:int = Number(sizeArrayLength * (Random.next() * 1.25 - 0.25)),
 					duration:int = Random.next() * 0.75 * sizeArrayLength,
 					size:Vector.<Number> = new Vector.<Number>(sizeArrayLength);
 				size = makeRandomArray(sizeArrayLength, onset, duration);
@@ -34,9 +34,9 @@ package net.vis4.streamgraph
 			return layers;
 		}
 		
-		protected function makeRandomArray(sizeArrayLength:int, onset:int, duration:int):Vector.<Number> 
+		protected function makeRandomArray(n:int, onset:int, duration:int):Vector.<Number> 
 		{
-			var x:Vector.<Number> = new Vector.<Number>(sizeArrayLength);
+			var x:Vector.<Number> = new Vector.<Number>(n);
 			
 			// add a single random bump
 			addRandomBump(x, onset, duration);
@@ -51,11 +51,11 @@ package net.vis4.streamgraph
 				end:int = Math.min(x.length, onset + duration),
 				len:int = end - onset;
 				
-			for (var i:int = 0; i < x.length && i < onset + duration; i++) {
+			for (var i:int = start; i < x.length && i < onset + duration; i++) {
 				var xx:Number = (i - onset) / duration,
 					yy:Number = xx * Math.exp( -10 * xx);
 				
-				x[i] += Math.abs(height * yy);				
+				x[i] += height * yy;				
 			}
 		}
 		

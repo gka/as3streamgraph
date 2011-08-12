@@ -17,17 +17,19 @@ package net.vis4.streamgraph
 		public var source:Bitmap;
 		
 		protected var _callback:Function; // will be called after image has loaded.
+		protected var _src:String;
 		
-		public function LastFMColorPicker(src:String, callback:Function) 
+		public function LastFMColorPicker(src:String) 
+		{
+			_src = src;
+		}
+		
+		public function load(callback:Function):void
 		{
 			_callback = callback;
-			
 			var ldr:Loader = new Loader();
-			
 			ldr.contentLoaderInfo.addEventListener(Event.COMPLETE, onSourceLoaded);
-			
-			ldr.load(new URLRequest(src));
-
+			ldr.load(new URLRequest(_src));
 		}
 		
 		protected function onSourceLoaded(e:Event):void 

@@ -13,9 +13,13 @@ package net.vis4.streamgraph
 	 */
 	public class RandomColorPicker implements ColorPicker 
 	{
+		protected var _minHue:Number;
+		protected var _maxHue:Number;
 
-		public function RandomColorPicker(seed:int = 2) 
+		public function RandomColorPicker(seed:int = 2, minHue:Number = 215, maxHue:Number = 236) 
 		{
+			_maxHue = maxHue;
+			_minHue = minHue;
 			Random.seed = 2;
 		}
 		
@@ -28,14 +32,17 @@ package net.vis4.streamgraph
 		{
 			for (var i:int = 0; i < layers.length; i++) {
 				layers[i].rgb = Color.fromHSV(
-					Random.float(0.6, 0.65) * 360, 
+					Random.float(_minHue, _maxHue), 
 					Random.float(0.2, 0.25), 
 					Random.float(0.4, 0.95)
-				);
+				)._int;
 			}
 		}
 		
-		
+		public function load(callback:Function):void
+		{
+			callback();
+		}
 	}
 
 }
