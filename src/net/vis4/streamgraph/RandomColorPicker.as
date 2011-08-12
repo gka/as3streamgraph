@@ -33,7 +33,7 @@ package net.vis4.streamgraph
 			for (var i:int = 0; i < layers.length; i++) {
 				layers[i].rgb = Color.fromHSV(
 					Random.float(_minHue, _maxHue), 
-					Random.float(0.2, 0.25), 
+					Random.float(0.2, 0.28), 
 					Random.float(0.4, 0.95)
 				)._int;
 			}
