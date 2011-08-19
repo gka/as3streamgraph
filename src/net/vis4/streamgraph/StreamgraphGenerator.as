@@ -1,6 +1,7 @@
 package net.vis4.streamgraph 
 {
 	import flash.display.Graphics;
+	import flash.display.Shape;
 	import flash.display.SimpleButton;
 	import flash.display.Sprite;
 	import flash.geom.Point;
@@ -49,10 +50,14 @@ package net.vis4.streamgraph
 			_viewport = _config.viewport;
 			_container = _config.container;
 			
+			_lineCanvas = new Shape();
+			_container.addChild(_lineCanvas);
+			
 			if (_config.seed) seed = _config.seed;
 			
 			if (_config.numLayers) numLayers = _config.numLayers;
 			if (_config.layerSize) layerSize = _config.layerSize;
+			if (_config.curved) isGraphCurved = _config.curved;
 			
 			// GENERATE DATA
 			//data = new LateOnsetDataSource();
@@ -154,9 +159,14 @@ package net.vis4.streamgraph
 				end = Math.min(m - 1, layers[i].end);
 				px1 = i == lastLayer ? 0 : 1;
 				
-				// set fill color of layer
-				g.beginFill(layers[i].rgb);
+				g = _container.graphics;
 				
+				// set fill color of layer
+				if (layers[i].bitmapFill) {
+					g.beginBitmapFill(layers[i].bitmapFill);
+				} else {
+					g.beginFill(layers[i].rgb);
+				}
 				// draw shape
 				
 				// draw top edge, left to right
@@ -164,20 +174,49 @@ package net.vis4.streamgraph
 				for (var j:int = start; j <= end; j++) {
 					graphVertex(g, j, layers[i].yTop, isGraphCurved, i == lastLayer);
 				}
-				if (isGraphCurved) drawCurve();
+				if (isGraphCurved) drawCurve(g);
 				// graphVertex(g, end, layers[i].yTop, i == lastLayer);
 				
 				// draw bottom edge, right to left
-				graphVertex(g, end, layers[i].yBottom, false, false);
+				graphVertex(g, end, layers[i].yBottom, true, false);
 				for (j = end; j >= start; j--) {
 					graphVertex(g, j, layers[i].yBottom, isGraphCurved, false);
 				}
-				if (isGraphCurved) drawCurve();
+				if (isGraphCurved) drawCurve(g);
 				// graphVertex(g, end, layers[i].yBottom, isGraphCurved, false);
 				graphVertex(g, start, layers[i].yTop, false, false);
-				
 				g.endFill();
+				
+				g = _lineCanvas.graphics;
+				
+				if (layers[i].topLineRGB >= 0) {
+					g.lineStyle(0, layers[i].topLineRGB);
+					graphVertex(g, start, layers[i].yTop, false, i == lastLayer, true);
+					for (j = start; j <= end; j++) {
+						graphVertex(g, j, layers[i].yTop, isGraphCurved, i == lastLayer);
+					}
+					if (isGraphCurved) drawCurve(g);
+					g.lineStyle();
+				}
+				
+				// draw bottom line
+				
+				if (layers[i].bottomLineRGB >= 0) {
+					// graphVertex(g, end, layers[i].yTop, i == lastLayer);
+					g.lineStyle(0, layers[i].bottomLineRGB);
+					// draw bottom edge, right to left
+					graphVertex(g, start, layers[i].yBottom, isGraphCurved, i == lastLayer, true);
+					for (j = start; j <= end; j++) {
+						graphVertex(g, j, layers[i].yBottom, isGraphCurved, false);
+					}
+					if (isGraphCurved) drawCurve(g);
+					// graphVertex(g, end, layers[i].yBottom, isGraphCurved, false);
+					//graphVertex(g, start, layers[i].yTop, false, false);
+					g.lineStyle();
+				}
 			}
+			
+			// eventually draw lines
 			
 			// give report
 			trace("Draw Time: " + (new Date().time - time) + "ms");
@@ -200,10 +239,11 @@ package net.vis4.streamgraph
 				
 				protected var _config:Object;
 		protected var catmullSplinePoints:Array = [];
+		protected var _lineCanvas:Shape;
 		
-		protected function drawCurve():void
+		protected function drawCurve(g:Graphics):void
 		{
-			CatmullRomSpline.draw(_container.graphics, catmullSplinePoints, false, false);
+			CatmullRomSpline.draw(g, catmullSplinePoints, false, false);
 			catmullSplinePoints = [];
 			
 		}

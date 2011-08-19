@@ -1,5 +1,6 @@
 package net.vis4.streamgraph 
 {
+	import flash.display.BitmapData;
 	/**
 	* Layer
 	* Represents a layer in a layered graph, maintaining properties which
@@ -19,6 +20,9 @@ package net.vis4.streamgraph
 		public var end:int;
 		public var sum:Number;
 		public var volatility:Number;
+		public var bitmapFill:BitmapData;
+		public var topLineRGB:int = -1;
+		public var bottomLineRGB:int = -1;
 		
 		public function Layer(name:String, size:Vector.<Number>) 
 		{
