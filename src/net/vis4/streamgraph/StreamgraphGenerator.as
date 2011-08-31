@@ -8,6 +8,7 @@ package net.vis4.streamgraph
 	import flash.geom.Rectangle;
 	import net.vis4.geom.CatmullRomSpline;
 	import net.vis4.streamgraph.Layer;
+
 	
 	/**
 	 * ...
@@ -34,11 +35,15 @@ package net.vis4.streamgraph
 		
 		public var layers:Vector.<Layer>;
 		
+		public var layerSprites:Vector.<Sprite>;
+		
 		public function StreamgraphGenerator(config:Object) 
 		{
 			_config = config;
 			
 			setup();
+			
+			
 		}
 		
 		public function setup():void 
@@ -49,6 +54,13 @@ package net.vis4.streamgraph
 				throw new ArgumentError('you must specify the container sprite');
 			_viewport = _config.viewport;
 			_container = _config.container;
+			
+			// each layer gets it's own sprite
+			layerSprites = new Vector.<Sprite>();
+			for (var i:uint = 0; i < _config.numLayers; i++) {
+				layerSprites[i] = new Sprite();
+				_container.addChild(layerSprites[i]);
+			}
 			
 			_lineCanvas = new Shape();
 			_container.addChild(_lineCanvas);
@@ -76,11 +88,18 @@ package net.vis4.streamgraph
 			//layout = new ThemeRiverLayout();
 			//layout = new StackLayout();
 
+			postSetup();
+			
 			// COLOR DATA
 			coloring = _config.coloring || new LastFMColorPicker("assets/layers-nyt.jpg");
 			coloring.load(run);
 			//coloring = new LastFMColorPicker(this, "layers.jpg");
 			//coloring = new RandomColorPicker(this);
+		}
+		
+		protected function postSetup():void
+		{
+			
 		}
 		
 		public function run():void
@@ -102,11 +121,11 @@ package net.vis4.streamgraph
 			var layoutTime:Number = new Date().time - time;
 			var _numLayers:int = layers.length;
 			var _layerSize:int = layers[0].size.length;
-			trace("Data has " + _numLayers + " layers, each with " + _layerSize + " datapoints.");
-			trace("Layout Method: " + layout.getName());
-			trace("Ordering Method: " + ordering.getName());
-			trace("Coloring Method: " + coloring.getName());
-			trace("Elapsed Time: " + layoutTime + "ms");
+			//trace("Data has " + _numLayers + " layers, each with " + _layerSize + " datapoints.");
+			//trace("Layout Method: " + layout.getName());
+			//trace("Ordering Method: " + ordering.getName());
+			//trace("Coloring Method: " + coloring.getName());
+			//trace("Elapsed Time: " + layoutTime + "ms");
 			
 			draw();
 		}
@@ -159,7 +178,7 @@ package net.vis4.streamgraph
 				end = Math.min(m - 1, layers[i].end);
 				px1 = i == lastLayer ? 0 : 1;
 				
-				g = _container.graphics;
+				g = layerSprites[i].graphics;
 				
 				// set fill color of layer
 				if (layers[i].bitmapFill) {
@@ -190,7 +209,7 @@ package net.vis4.streamgraph
 				g = _lineCanvas.graphics;
 				
 				if (layers[i].topLineRGB >= 0) {
-					g.lineStyle(0, layers[i].topLineRGB);
+					g.lineStyle(0, layers[i].topLineRGB, layers[i].topLineAlpha);
 					graphVertex(g, start, layers[i].yTop, false, i == lastLayer, true);
 					for (j = start; j <= end; j++) {
 						graphVertex(g, j, layers[i].yTop, isGraphCurved, i == lastLayer);
@@ -203,7 +222,7 @@ package net.vis4.streamgraph
 				
 				if (layers[i].bottomLineRGB >= 0) {
 					// graphVertex(g, end, layers[i].yTop, i == lastLayer);
-					g.lineStyle(0, layers[i].bottomLineRGB);
+					g.lineStyle(0, layers[i].bottomLineRGB, layers[i].bottomLineAlpha);
 					// draw bottom edge, right to left
 					graphVertex(g, start, layers[i].yBottom, isGraphCurved, i == lastLayer, true);
 					for (j = start; j <= end; j++) {
@@ -214,12 +233,13 @@ package net.vis4.streamgraph
 					//graphVertex(g, start, layers[i].yTop, false, false);
 					g.lineStyle();
 				}
+				
 			}
 			
 			// eventually draw lines
 			
 			// give report
-			trace("Draw Time: " + (new Date().time - time) + "ms");
+			//trace("Draw Time: " + (new Date().time - time) + "ms");
 		}
 		
 		protected function graphVertex(g:Graphics, point:int, source:Vector.<Number>, curve:Boolean, px1:Boolean, first:Boolean = false):void

@@ -22,7 +22,9 @@ package net.vis4.streamgraph
 		public var volatility:Number;
 		public var bitmapFill:BitmapData;
 		public var topLineRGB:int = -1;
+		public var topLineAlpha:Number = 1;
 		public var bottomLineRGB:int = -1;
+		public var bottomLineAlpha:Number = 1;
 		
 		public function Layer(name:String, size:Vector.<Number>) 
 		{
