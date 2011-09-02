@@ -1,4 +1,4 @@
-package net.vis4.streamgraph 
+package net.vis4.streamgraph.layout 
 {
 	/**
 	 * LayerLayout
@@ -27,7 +27,7 @@ package net.vis4.streamgraph
 			for (var i:int = 0; i < layers.length; i++) {
 				layers[i].yBottom = baseline.concat();
 				for (var j:int = 0; j < baseline.length; j++) {
-					baseline[j] -= layers[i].size[j];
+					if (layers[i].visible) baseline[j] -= layers[i].size[j];
 				}
 				layers[i].yTop = baseline.concat();
 			}

@@ -9,6 +9,8 @@ package net.vis4.streamgraph
 	import flash.geom.Rectangle;
 	import net.vis4.geom.CatmullRomSpline;
 	import net.vis4.streamgraph.Layer;
+	import net.vis4.streamgraph.layout.LayerLayout;
+	import net.vis4.streamgraph.layout.MinimizedWiggleLayout;
 
 	
 	/**
@@ -65,14 +67,14 @@ package net.vis4.streamgraph
 				_container.addChild(layerSprites[i]);
 			}
 			
-			_lineCanvas = new Shape();
+			_lineCanvas = makeShape();
 			_container.addChild(_lineCanvas);
 			
 			if (_config.seed) seed = _config.seed;
 			
 			if (_config.numLayers) numLayers = _config.numLayers;
 			if (_config.layerSize) layerSize = _config.layerSize;
-			if (_config.curved) isGraphCurved = _config.curved;
+			if (_config.hasOwnProperty('curved')) isGraphCurved = _config.curved;
 			
 			// GENERATE DATA
 			//data = new LateOnsetDataSource();

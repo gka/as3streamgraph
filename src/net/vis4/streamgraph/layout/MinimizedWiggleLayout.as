@@ -1,4 +1,4 @@
-package net.vis4.streamgraph 
+package net.vis4.streamgraph.layout 
 {
 	import net.vis4.streamgraph.Layer;
 
