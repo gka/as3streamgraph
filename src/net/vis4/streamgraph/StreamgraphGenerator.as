@@ -8,6 +8,8 @@ package net.vis4.streamgraph
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import net.vis4.geom.CatmullRomSpline;
+	import net.vis4.streamgraph.filter.AllVisibleFilter;
+	import net.vis4.streamgraph.filter.LayerFilter;
 	import net.vis4.streamgraph.Layer;
 	import net.vis4.streamgraph.layout.LayerLayout;
 	import net.vis4.streamgraph.layout.MinimizedWiggleLayout;
@@ -35,6 +37,7 @@ package net.vis4.streamgraph
 		public var layout:LayerLayout;
 		public var ordering:LayerSort;
 		public var coloring:ColorPicker;
+		public var filter:LayerFilter;
 		
 		public var layers:Vector.<Layer>;
 		
@@ -93,6 +96,8 @@ package net.vis4.streamgraph
 			//layout = new ThemeRiverLayout();
 			//layout = new StackLayout();
 
+			filter = _config.filter || new AllVisibleFilter();
+			
 			postSetup();
 			
 			// COLOR DATA
@@ -117,6 +122,9 @@ package net.vis4.streamgraph
 			// generate graph
 			layers = data.make(numLayers, layerSize);
 			
+			// filter layers
+			layers = filter.filter(layers);
+			
 			layers = ordering.sort(layers);
 			layout.layout(layers);
 			coloring.colorize(layers);
@@ -127,6 +135,7 @@ package net.vis4.streamgraph
 			// give report
 			var layoutTime:Number = new Date().time - time;
 			var _numLayers:int = layers.length;
+			numLayers = layers.length;
 			var _layerSize:int = layers[0].size.length;
 			//trace("Data has " + _numLayers + " layers, each with " + _layerSize + " datapoints.");
 			//trace("Layout Method: " + layout.getName());
