@@ -1,5 +1,6 @@
 package net.vis4.streamgraph 
 {
+	import flash.display.DisplayObject;
 	import flash.display.Graphics;
 	import flash.display.Shape;
 	import flash.display.SimpleButton;
@@ -46,6 +47,8 @@ package net.vis4.streamgraph
 			
 		}
 		
+		
+		
 		public function setup():void 
 		{
 			if (Rectangle(_config.viewport) == null) 
@@ -58,7 +61,7 @@ package net.vis4.streamgraph
 			// each layer gets it's own sprite
 			layerSprites = new Vector.<Sprite>();
 			for (var i:uint = 0; i < _config.numLayers; i++) {
-				layerSprites[i] = new Sprite();
+				layerSprites[i] = makeSprite();
 				_container.addChild(layerSprites[i]);
 			}
 			
@@ -95,6 +98,8 @@ package net.vis4.streamgraph
 			coloring.load(run);
 			//coloring = new LastFMColorPicker(this, "layers.jpg");
 			//coloring = new RandomColorPicker(this);
+			
+			_initialized = true;
 		}
 		
 		protected function postSetup():void
@@ -144,6 +149,7 @@ package net.vis4.streamgraph
 			}
 			
 			var scale:Number = (screenBottom - screenTop) / (max - min);
+			
 			for (i = 0; i < layers[0].size.length; i++) {
 				for (j = 0; j < layers.length; j++) {
 					layers[j].yTop[i] = screenTop + scale * (layers[j].yTop[i] - min);
@@ -257,9 +263,10 @@ package net.vis4.streamgraph
 		}
 		
 				
-				protected var _config:Object;
+		protected var _config:Object;
 		protected var catmullSplinePoints:Array = [];
 		protected var _lineCanvas:Shape;
+		protected var _initialized:Boolean = false;
 		
 		protected function drawCurve(g:Graphics):void
 		{
@@ -268,6 +275,36 @@ package net.vis4.streamgraph
 			
 		}
 		
+		/*
+		 * removes all streamgraph sprites
+		 */
+		public function clean():void
+		{
+			if (_doList.length == 0) return;
+			for (var i:int = _doList.length-1; i >= 0; i--) {
+				if (_doList[i].stage) _doList[i].parent.removeChild(_doList[i]);
+			}
+			_doList = new Vector.<DisplayObject>();			
+		}
+		
+		// let's keep a list of all added display objects for clean up
+		private var _doList:Vector.<DisplayObject> = new Vector.<DisplayObject>();
+		
+		protected function makeSprite():Sprite
+		{
+			var s:Sprite =  new Sprite();
+			_doList.push(s);
+			return s;
+		}
+
+		protected function makeShape():Shape
+		{
+			var s:Shape =  new Shape();
+			_doList.push(s);
+			return s;
+		}
+		
+		public function get viewport():Rectangle { return _viewport; }
 		
 	}
 
