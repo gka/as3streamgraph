@@ -5,6 +5,7 @@ package net.vis4.streamgraph
 	import flash.display.Shape;
 	import flash.display.SimpleButton;
 	import flash.display.Sprite;
+	import flash.events.EventDispatcher;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import net.vis4.geom.CatmullRomSpline;
@@ -16,10 +17,16 @@ package net.vis4.streamgraph
 
 	
 	/**
-	 * ...
-	 * @author Gregor Aisch
-	 */
-	public class StreamgraphGenerator 
+	* Layer
+	* Represents a layer in a layered graph, maintaining properties which
+	* define it's position, size, color and mathemetical characteristics
+	*
+	* @author Lee Byron
+	* @author Martin Wattenberg
+	* 
+	* Updated by Gregor Aisch
+	*/
+	public class StreamgraphGenerator extends EventDispatcher
 	{
 		protected var _container:Sprite;
 		protected var _viewport:Rectangle;
@@ -316,6 +323,8 @@ package net.vis4.streamgraph
 		}
 		
 		public function get viewport():Rectangle { return _viewport; }
+		
+		public function get config():Object {return _config;}
 		
 	}
 
