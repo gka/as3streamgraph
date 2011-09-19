@@ -9,6 +9,8 @@ package net.vis4.streamgraph
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import net.vis4.geom.CatmullRomSpline;
+	import net.vis4.streamgraph.color.ColorPicker;
+	import net.vis4.streamgraph.color.LastFMColorPicker;
 	import net.vis4.streamgraph.filter.AllVisibleFilter;
 	import net.vis4.streamgraph.filter.LayerFilter;
 	import net.vis4.streamgraph.Layer;

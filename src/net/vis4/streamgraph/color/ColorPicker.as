@@ -1,5 +1,6 @@
-package net.vis4.streamgraph 
+package net.vis4.streamgraph.color 
 {
+	import net.vis4.streamgraph.Layer;
 	
 	/**
 	 * ColorPicker

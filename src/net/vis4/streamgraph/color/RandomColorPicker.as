@@ -1,4 +1,4 @@
-package net.vis4.streamgraph 
+package net.vis4.streamgraph.color 
 {
 	import math.Random;
 	import net.vis4.color.Color;

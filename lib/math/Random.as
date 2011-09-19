@@ -31,7 +31,6 @@ package math
 		public static function randomSeed() : void
 		{
 			seed = Math.random() * 2147483647;
-			trace("seed: " + _seed);
 		}
 
 		public static function next() : Number

@@ -64,5 +64,23 @@ package net.vis4.streamgraph
 				}		
 			}
 		}	
+		
+		public function clone():Layer
+		{
+			var c:Layer = new Layer(name, size.concat());
+			c.bitmapFill = bitmapFill;
+			c.bottomLineAlpha = bottomLineAlpha;
+			c.bottomLineRGB = bottomLineRGB;
+			c.end = end;
+			c.onset = onset;
+			c.rgb = rgb;
+			c.sum = sum;
+			c.topLineAlpha = topLineAlpha;
+			c.topLineRGB = topLineRGB;
+			c.volatility = volatility;
+			c.yBottom = yBottom.concat();
+			c.yTop = yTop.concat();
+			return c;
+		}
 	}
 }

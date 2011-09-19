@@ -1,4 +1,4 @@
-package net.vis4.streamgraph 
+package net.vis4.streamgraph.color 
 {
 	import flash.display.Bitmap;
 	import flash.display.Loader;
